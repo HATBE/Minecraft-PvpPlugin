@@ -19,6 +19,13 @@ Author: hatbe2113
 Date: 10.22
 */
 
+/*
+TODO:
+- Kit system
+- arena system (multiple arenas, select random free)
+- time limit
+ */
+
 public final class Main extends JavaPlugin {
 
     public static final String PLUGIN_NAME = "PvpPlugin";
@@ -26,7 +33,7 @@ public final class Main extends JavaPlugin {
     private PluginManager plManager = Bukkit.getPluginManager();
     private CustomConfigHandler pvpConfig;
 
-    // sender player // target player
+    // sender (player) // target (player=
     private HashMap<Player, Player> gameRequests = new HashMap<>();
     private ArrayList<Game> games = new ArrayList<>();
 
@@ -41,10 +48,12 @@ public final class Main extends JavaPlugin {
             return;
         }
 
+        createDefaultConfig();
+
         registerEvents();
         registerCommands();
 
-        debug();
+        /* TODO */ debug(); // REMOVE before PROD! -X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X
     }
 
     @Override
@@ -56,7 +65,7 @@ public final class Main extends JavaPlugin {
     private Boolean checkStartupRoutine() {
         // in this function all necessary settings are checked.
         // if false is returned, something went wrong
-        createDefaultConfig();
+
         // TODO:
         return true;
     }
@@ -66,7 +75,7 @@ public final class Main extends JavaPlugin {
 
         // /pvp <player> *[accept/deny/revoke]
         getCommand("pvp").setExecutor(new PvpCommand(this));
-        // /pvpadmin
+        // /pvpadmin setspawn
         getCommand("pvpadmin").setExecutor(new PvpadminCommand());
     }
 
@@ -77,6 +86,7 @@ public final class Main extends JavaPlugin {
     }
 
     private void debug() {
+        // print stuff for debug in a 3-second interval
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
@@ -87,6 +97,7 @@ public final class Main extends JavaPlugin {
     }
 
     private void createDefaultConfig() {
+        // Create every path with value of the default config
         pvpConfig = new CustomConfigHandler(this, "pvpconfig");
         pvpConfig.addDefault("gamespawn.spawnradius", 10);
         pvpConfig.addDefault("gamespawn.world", "world");

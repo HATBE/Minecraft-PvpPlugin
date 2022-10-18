@@ -93,6 +93,7 @@ public class PvpCommand implements CommandExecutor {
                         senderP.sendMessage(String.format("You don't have a pvp request from %s", targetP.getDisplayName()));
                         return false;
                     }
+                    // if nothing failed, accept request
                     acceptPvpRequest();
                 } else if(args[1].equalsIgnoreCase("deny")) {
                     // deny a pvp request
@@ -102,6 +103,7 @@ public class PvpCommand implements CommandExecutor {
                         senderP.sendMessage(String.format("You don't have a pvp request from %s", targetP.getDisplayName()));
                         return false;
                     }
+                    // if nothing failed, deny request
                     denyPvpRequest();
                 } else if(args[1].equalsIgnoreCase("revoke")) {
                     // revoke a pvp request
@@ -111,44 +113,61 @@ public class PvpCommand implements CommandExecutor {
                         senderP.sendMessage(String.format("You don't sent %s a pvp request", targetP.getDisplayName()));
                         return false;
                     }
+                    // if nothing failed, revoke request
                     revokePvpRequest();
                 } else {
+                    // command was not executed correctly
                     senderP.sendMessage(String.format("You are using the wrong format, please use /%s <player> *[accept/deny/revoke] ", command.getName()));
                 }
                 break;
             default:
+                // command was not executed correctly
                 senderP.sendMessage(String.format("You are using the wrong format, please use /%s <player> *[accept/deny/revoke] ", command.getName()));
                 return false;
         }
+        // if anything went right, success of command
         return true;
     }
 
     private void createPvpRequest() {
+        // create a new pvp match request sender -> target
+        // add sender and target to hashmap "gameRequests"
         main.getGameRequests().put(senderP, targetP);
+        // send messages to sender and target
         senderP.sendMessage(String.format("You have sent %s a pvp request", targetP.getDisplayName()));
         targetP.sendMessage(String.format("%s sent you a pvp request", senderP.getDisplayName()));
     }
 
     private void acceptPvpRequest() {
+        // the target accepts the request from the sender
         // check if target is already in a game
         if(GameManager.isPlayerInGame(main, targetP)) {
             senderP.sendMessage(String.format("%s is currently in a game", targetP.getDisplayName()));
             return;
         }
+        // remove sender and target to hashmap "gameRequests"
         main.getGameRequests().remove(targetP, senderP);
+        // send messages to sender and target
         senderP.sendMessage(String.format("You have accepted the pvp request from %s", targetP.getDisplayName()));
         targetP.sendMessage(String.format("%s has accepted your pvp request", senderP.getDisplayName()));
+        // create a new game with sender and player
         new Game(main, senderP, targetP);
     }
 
     private void denyPvpRequest() {
+        // the target denys the request from the sender
+        // remove sender and target to hashmap "gameRequests"
         main.getGameRequests().remove(targetP, senderP);
+        // send messages to sender and target
         senderP.sendMessage(String.format("You have denied the pvp request from %s", targetP.getDisplayName()));
         targetP.sendMessage(String.format("%s denied your pvp request", senderP.getDisplayName()));
     }
 
     private void revokePvpRequest() {
+        // the sender revokes his request to the target
+        // remove sender and target to hashmap "gameRequests"
         main.getGameRequests().remove(senderP, targetP);
+        // send messages to sender and target
         senderP.sendMessage(String.format("You have revoked a pvp request to %s", targetP.getDisplayName()));
         targetP.sendMessage(String.format("%s revoked the pvp request", senderP.getDisplayName()));
     }
