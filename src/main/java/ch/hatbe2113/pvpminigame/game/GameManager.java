@@ -12,4 +12,19 @@ public class GameManager {
         }
         return false;
     }
+
+    public static Game getGameOfPlayer(Main main, Player player) {
+        for(Game game : main.getGames()) {
+            if(game.getPlayers().contains(player)) {
+                return game;
+            }
+        }
+        return null;
+    }
+
+    public static void stopGameOfPlayer(Main main, Player player) {
+        if(isPlayerInGame(main, player)) {
+            getGameOfPlayer(main, player).stop();
+        }
+    }
 }

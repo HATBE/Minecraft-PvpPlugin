@@ -25,6 +25,8 @@ public class Game {
     }
 
     public void stop() {
+        senderP.sendMessage("stopped");
+        targetP.sendMessage("stopped");
         main.getGames().remove(this);
     }
 
