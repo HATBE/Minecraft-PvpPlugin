@@ -24,5 +24,7 @@ public class OnPlayerQuitEvent implements Listener {
         if(main.getGameRequests().containsValue(e.getPlayer())) {
             main.getGameRequests().values().remove(e.getPlayer());
         }
+
+        // TODO: end all running games in which this player is playing
     }
 }

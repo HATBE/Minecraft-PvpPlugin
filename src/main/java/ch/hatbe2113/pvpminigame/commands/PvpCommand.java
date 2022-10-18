@@ -1,6 +1,8 @@
 package ch.hatbe2113.pvpminigame.commands;
 
 import ch.hatbe2113.pvpminigame.Main;
+import ch.hatbe2113.pvpminigame.game.Game;
+import ch.hatbe2113.pvpminigame.game.GameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,6 +29,12 @@ public class PvpCommand implements CommandExecutor {
         }
 
         senderP = (Player) sender;
+
+        // return if player is in a game
+        if(GameManager.isPlayerInGame(main, senderP)) {
+            senderP.sendMessage(String.format("You are currently in a game, you can't use this command right now"));
+            return false;
+        }
 
         switch(args.length) {
             case 1:
@@ -77,7 +85,7 @@ public class PvpCommand implements CommandExecutor {
                 }
 
                 // check if arg2 is correct (accept, deny or revoke)
-                if(args[0].equalsIgnoreCase("accept")) {
+                if(args[1].equalsIgnoreCase("accept")) {
                     // accept a pvp request
 
                     // check if target sent a pvp request to sender
@@ -107,13 +115,11 @@ public class PvpCommand implements CommandExecutor {
                 } else {
                     senderP.sendMessage(String.format("You are using the wrong format, please use /%s <player> *[accept/deny/revoke] ", command.getName()));
                 }
-                // TODO
                 break;
             default:
                 senderP.sendMessage(String.format("You are using the wrong format, please use /%s <player> *[accept/deny/revoke] ", command.getName()));
                 return false;
         }
-
         return true;
     }
 
@@ -124,10 +130,15 @@ public class PvpCommand implements CommandExecutor {
     }
 
     private void acceptPvpRequest() {
+        // check if target is already in a game
+        if(GameManager.isPlayerInGame(main, targetP)) {
+            senderP.sendMessage(String.format("%s is currently in a game", targetP.getDisplayName()));
+            return;
+        }
         main.getGameRequests().remove(targetP, senderP);
         senderP.sendMessage(String.format("You have accepted the pvp request from %s", targetP.getDisplayName()));
         targetP.sendMessage(String.format("%s has accepted your pvp request", senderP.getDisplayName()));
-        // launch new game
+        new Game(main, senderP, targetP);
     }
 
     private void denyPvpRequest() {
