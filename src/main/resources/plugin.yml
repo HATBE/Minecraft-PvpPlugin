@@ -1,0 +1,12 @@
+name: PvpMinigame1
+version: '${project.version}'
+main: ch.hatbe2113.pvpminigame.Main
+api-version: 1.19
+authors: [ hatbe2113 ]
+description: A PvP Minigame
+website: https://hatbe.ch
+commands:
+  pvp:
+    description: starts a pvp game with another player
+  pvpadmin:
+    description: configure the pvp system
