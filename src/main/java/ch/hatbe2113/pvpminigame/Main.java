@@ -2,6 +2,7 @@ package ch.hatbe2113.pvpminigame;
 
 import ch.hatbe2113.pvpminigame.commands.PvpCommand;
 import ch.hatbe2113.pvpminigame.commands.PvpadminCommand;
+import ch.hatbe2113.pvpminigame.events.OnPlayerDeathEvent;
 import ch.hatbe2113.pvpminigame.events.OnPlayerQuitEvent;
 import ch.hatbe2113.pvpminigame.game.Game;
 import ch.hatbe2113.pvpminigame.io.CustomConfigHandler;
@@ -24,7 +25,7 @@ TODO:
 - Kit system
 - arena system (multiple arenas, select random free)
 - time limit
- */
+*/
 
 public final class Main extends JavaPlugin {
 
@@ -48,7 +49,8 @@ public final class Main extends JavaPlugin {
             return;
         }
 
-        createDefaultConfig();
+        loadConfigs();
+        createDefaultConfigs();
 
         registerEvents();
         registerCommands();
@@ -83,6 +85,7 @@ public final class Main extends JavaPlugin {
         // in this function every event is registered
 
         plManager.registerEvents(new OnPlayerQuitEvent(this), this);
+        plManager.registerEvents(new OnPlayerDeathEvent(this), this);
     }
 
     private void debug() {
@@ -90,21 +93,24 @@ public final class Main extends JavaPlugin {
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
-                System.out.println("requests" + gameRequests.keySet());
-                System.out.println("games: " + games.size());
+                //System.out.println("requests" + gameRequests.keySet());
+                //System.out.println("games: " + games.size());
             }
         }, 20L * 1, 20L * 3);
     }
 
-    private void createDefaultConfig() {
-        // Create every path with value of the default config
-        pvpConfig = new CustomConfigHandler(this, "pvpconfig");
+    private void createDefaultConfigs() {
+        // Create default configs
         pvpConfig.addDefault("gamespawn.spawnradius", 10);
         pvpConfig.addDefault("gamespawn.world", "world");
         pvpConfig.addDefault("gamespawn.x", 0);
-        pvpConfig.addDefault("gamespawn.y", 0);
-        pvpConfig.addDefault("gamespawn.z", 80);
+        pvpConfig.addDefault("gamespawn.y", 100);
+        pvpConfig.addDefault("gamespawn.z", 0);
         pvpConfig.save();
+    }
+
+    private void loadConfigs() {
+        pvpConfig = new CustomConfigHandler(this, "pvpconfig");
     }
 
     // GETTERS and SETTERS
@@ -115,5 +121,9 @@ public final class Main extends JavaPlugin {
 
     public ArrayList<Game> getGames() {
         return games;
+    }
+
+    public CustomConfigHandler getPvpConfig() {
+        return pvpConfig;
     }
 }
