@@ -10,20 +10,20 @@ import java.util.ArrayList;
 
 public class Game {
     private Main main;
-    private Player senderP;
-    private Player targetP;
+    private Player senderPlayer;
+    private Player targetPlayer;
 
-    private Location senderPosBeforeGame;
-    private Location targetPosBeforeGame;
+    private Location senderPlayerPosBeforeGame;
+    private Location targetPlayerPosBeforeGame;
 
     private Location gameSpawn;
 
-    public Game(Main main, Player senderP, Player targetP) {
+    public Game(Main main, Player senderPlayer, Player targetPlayer) {
         this.main = main;
-        this.senderP = senderP;
-        this.targetP = targetP;
-        this.senderPosBeforeGame = senderP.getLocation();
-        this.targetPosBeforeGame = targetP.getLocation();
+        this.senderPlayer = senderPlayer;
+        this.targetPlayer = targetPlayer;
+        this.senderPlayerPosBeforeGame = senderPlayer.getLocation();
+        this.targetPlayerPosBeforeGame = targetPlayer.getLocation();
 
         start();
     }
@@ -33,8 +33,8 @@ public class Game {
         // add this game to arraylist in main class
         main.getGames().add(this);
         // send messages to sender and target
-        senderP.sendMessage("started");
-        targetP.sendMessage("started");
+        senderPlayer.sendMessage("The game has started.");
+        targetPlayer.sendMessage("The game has started.");
 
         startupSetup();
     }
@@ -42,11 +42,11 @@ public class Game {
     public void stop() {
         // stop a game
         // send messages to sender and target
-        senderP.sendMessage("stopped");
-        targetP.sendMessage("stopped");
+        senderPlayer.sendMessage("The game has stopped.");
+        targetPlayer.sendMessage("The game has stopped.");
 
-        senderP.teleport(senderPosBeforeGame);
-        targetP.teleport(targetPosBeforeGame);
+        senderPlayer.teleport(senderPlayerPosBeforeGame);
+        targetPlayer.teleport(targetPlayerPosBeforeGame);
         // remove this game in arraylist in main class
         main.getGames().remove(this);
     }
@@ -60,14 +60,14 @@ public class Game {
                 main.getPvpConfig().getDouble("gamespawn.z")
         );
         int radius = main.getPvpConfig().getInt("gamespawn.spawnradius");
-        senderP.teleport(gameSpawn);
-        targetP.teleport(gameSpawn);
+        senderPlayer.teleport(gameSpawn);
+        targetPlayer.teleport(gameSpawn);
     }
 
     public void ended(Player looser, Player winner) {
-        Bukkit.broadcastMessage(looser.getDisplayName() + " has lost " + winner.getDisplayName() + " has won");
-        senderP.teleport(senderPosBeforeGame);
-        targetP.teleport(targetPosBeforeGame);
+        Bukkit.broadcastMessage((String.format("%s has lost, %s has won", looser.getDisplayName(), winner.getDisplayName())));
+        senderPlayer.teleport(senderPlayerPosBeforeGame);
+        targetPlayer.teleport(targetPlayerPosBeforeGame);
         this.stop();
     }
 
@@ -76,8 +76,8 @@ public class Game {
     public ArrayList<Player> getPlayers() {
         // get the two players of this game
         ArrayList<Player> players = new ArrayList<>();
-        players.add(senderP);
-        players.add(targetP);
+        players.add(senderPlayer);
+        players.add(targetPlayer);
         return players;
     }
 
